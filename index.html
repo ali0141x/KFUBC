@@ -360,6 +360,9 @@
       overflow: hidden;
       z-index: 1;
       touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
     }
 
     .btn::before {
@@ -377,6 +380,7 @@
     .btn:active {
       background-color: #312e81;
       transform: scale(0.98);
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
     }
 
     @media (hover: hover) {
@@ -407,6 +411,7 @@
       opacity: 0;
       visibility: hidden;
       transition: opacity 0.3s, visibility 0.3s;
+      touch-action: manipulation;
     }
 
     .modal-overlay.active {
@@ -479,11 +484,16 @@
       cursor: pointer;
       transition: all 0.3s;
       touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
     }
 
     .modal-button:active {
       background-color: #312e81;
       transform: scale(0.98);
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+      border-color: #ffd700;
     }
 
     @media (hover: hover) {
@@ -729,7 +739,13 @@
           </div>
         `;
         
+        // Add both click and touch event listeners for better mobile support
         cardElement.addEventListener('click', () => handleCardClick(index));
+        cardElement.addEventListener('touchstart', (e) => {
+          e.preventDefault(); // Prevent default touch behavior
+          handleCardClick(index);
+        });
+        
         cardGrid.appendChild(cardElement);
       });
     }
@@ -887,18 +903,28 @@
       resetGameState();
     }
 
-    // Event Listeners
+    // Event Listeners - Add both click and touchstart events for better mobile support
     resetBtn.addEventListener('click', resetGame);
+    resetBtn.addEventListener('touchstart', function(e) {
+      e.preventDefault(); // Prevent default touch behavior
+      resetGame();
+    });
+    
     closeModalBtn.addEventListener('click', hideVictoryModal);
+    closeModalBtn.addEventListener('touchstart', function(e) {
+      e.preventDefault(); // Prevent default touch behavior
+      hideVictoryModal();
+    });
 
-    // Prevent double-tap zoom on mobile
-    document.addEventListener('touchend', function(event) {
-      if (event.target.classList.contains('card') || 
-          event.target.classList.contains('btn') || 
-          event.target.classList.contains('modal-button')) {
+    // Improve touch handling for cards
+    document.addEventListener('touchstart', function(event) {
+      // Only prevent default for game elements to avoid interfering with scrolling
+      if (event.target.closest('.card') || 
+          event.target.closest('.btn') || 
+          event.target.closest('.modal-button')) {
         event.preventDefault();
       }
-    }, false);
+    }, {passive: false});
 
     // Initialize the game on load
     document.addEventListener('DOMContentLoaded', initGame);
