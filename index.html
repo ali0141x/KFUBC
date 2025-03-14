@@ -626,7 +626,7 @@
   <div class="game-container">
     <div class="info-section">
       <p class="arabic-text rtl">
-        اذا استطعت حل العبة في اقل من 25 ثانية فستلم جائزتك من ركن نادي الأعمال
+        اذا استطعت حل العبة في اقل من 20 ثانية فستلم جائزتك من ركن نادي الأعمال
       </p>
       <p class="game-stats">
         Matches found: <span id="matches">0</span> of 6 | Time: <span id="timer">0:00</span>
@@ -675,7 +675,7 @@
     }
 
     // Game Configuration
-    const TIME_LIMIT = 25; // 25 seconds
+    const TIME_LIMIT = 20; // 20 seconds
 
     // Game State
     let cards = [];
@@ -897,6 +897,7 @@
     function gameComplete() {
       isGameComplete = true;
       if (timerInterval) clearInterval(timerInterval);
+      // Only show victory if time was under the limit
       if (timer < TIME_LIMIT) {
         showVictoryModal();
       }
